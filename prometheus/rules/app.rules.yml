@@ -1,0 +1,22 @@
+groups:
+- name: app.rules
+  rules:
+  
+  - record: app:http_requests:rate5m
+    expr: sum(rate(http_requests_total[5m]))
+  
+  - record: app:http_requests:success:rate5m
+    expr: sum(rate(http_requests_total{status=~"2..|3.."}[5m]))
+
+  - record: app:http_requests:error:rate5m
+    expr: sum(rate(http_requests_total{status=~"5.."}[5m]))
+  
+  - record: app:availability:rate5m
+    expr: app:http_requests:success:rate5m
+          /
+          app:http_requests:rate5m
+  
+  - record: app:error_rate:rate5m
+    expr: app:http_requests:error:rate5m
+          /
+          app:http_requests:rate5m

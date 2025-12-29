@@ -1,0 +1,33 @@
+services:
+  api:
+    build:
+      context: ./app
+      dockerfile: Dockerfile 
+    container_name: api
+    ports:
+      - "8000:8000"
+    
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - /c/Users/PoolYard/Desktop/Monitoring/day7-monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /c/Users/PoolYard/Desktop/Monitoring/day7-monitoring/prometheus/rules:/etc/prometheus/rules
+    ports:
+      - "9090:9090"
+    
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+  
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alertmanager
+    volumes:
+      - /c/Users/PoolYard/Desktop/Monitoring/day7-monitoring/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
